@@ -1,0 +1,2 @@
+python-basic.pptx filter=lfs diff=lfs merge=lfs -text
+slide.pptx filter=lfs diff=lfs merge=lfs -text
