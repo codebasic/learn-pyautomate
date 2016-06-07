@@ -15,8 +15,17 @@ def 요소추출(대상, 선택자):
     return 선택된요소
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        sys.exit(1)
+    사용법 = """사용법 안내:
+    $ python {0} URL|파일명 HTML태그유형
+
+    예시:
+
+    $ python {0} http://www.naver.com a
+
+    $ python {0} snapshot.html img"""
+    
+    if len(sys.argv) < 3:
+        sys.exit(사용법.format(sys.argv[0]))
 
     대상 = sys.argv[1]
     선택자 = sys.argv[2]
