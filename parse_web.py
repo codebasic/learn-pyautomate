@@ -23,9 +23,10 @@ if __name__ == '__main__':
     $ python {0} http://www.naver.com a
 
     $ python {0} snapshot.html img"""
-    
+
     if len(sys.argv) < 3:
-        sys.exit(사용법.format(sys.argv[0]))
+        스크립트명 = sys.argv[0]
+        sys.exit(사용법.format(스크립트명))
 
     대상 = sys.argv[1]
     선택자 = sys.argv[2]
