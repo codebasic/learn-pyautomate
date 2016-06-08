@@ -19,11 +19,11 @@ def setup_webdriver():
     http_download(chromedriver_url, driverfile)
 
     # 압축 해제
-    print('Extracting downloaded driver file ...')
-    if os.path.exists(driverfile):
-        driverzip = zipfile.ZipFile(driverfile)
-        driverzip.extractall()
-        driverzip.close()
+    # print('Extracting downloaded driver file ...')
+    # if os.path.exists(driverfile):
+    #     driverzip = zipfile.ZipFile(driverfile)
+    #     driverzip.extractall()
+    #     driverzip.close()
 
 def http_download(url, 파일경로):
     응답 = requests.get(url)
