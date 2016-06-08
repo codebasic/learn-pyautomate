@@ -8,7 +8,7 @@ def 구글검색(키워드, 탭수=5):
     if not 응답.status_code == 200:
         print('HTTP 응답 코드: {}'.format(응답.status_code))
     else:
-        스프 = BeautifulSoup(응답.text)
+        스프 = BeautifulSoup(응답.text, 'lxml')
 
     결과링크 = 스프.select('.r a')
     for 링크 in 결과링크[:탭수]:
