@@ -11,16 +11,16 @@ class wZipFile(zipfile.ZipFile):
         for info in super().infolist():
             info.filename = self._filename_from_bytes(info.filename)
 
-    def _encode_decode_dance(self, text, enc, dec):
-        return text.encode(enc).decode(dec)
+    def _encode_dance(self, src, enc, dec):
+        return src.encode(enc).decode(dec)
 
     def _filename_from_bytes(self, filename):
         try:
-            filename = filename.encode('utf-8').decode(sys.stdout.encoding)
+            filename = self._encode_dance(filename, 'utf-8', sys.stdout.encoding)
             return filename
         except UnicodeDecodeError:
             try:
-                filename = filename.encode('cp437').decode(sys.stdout.encoding)
+                filename = self._encode_dance(filename, 'cp437', sys.stdout.encoding)
                 return filename
             except UnicodeEncodeError:
                 return filename
@@ -29,7 +29,7 @@ class wZipFile(zipfile.ZipFile):
 
     def _filename_to_bytes(self, filename):
         if platform.system() == 'Windows':
-            filename = filename.encode(sys.stdout.encoding).decode('cp437')
+            filename = self._encode_dance(filename, sys.stdout.encoding, 'cp437')
         return filename
 
     def getinfo(self, name):

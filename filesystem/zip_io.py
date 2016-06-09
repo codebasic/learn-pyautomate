@@ -1,7 +1,7 @@
 # coding: utf-8
 import zipfile
 import sys, platform, os, shutil
-from bigpy.wZip import wZipFile
+from wZip import wZipFile
 
 print('예제 파일 생성')
 컴퓨터위인 = {'튜링': '앨런 튜링', '잡스': '스티브 잡스'}
@@ -10,7 +10,7 @@ for 제목, 내용 in 컴퓨터위인.items():
     파일명 = 제목 + '.txt'
     with open(파일명, 'w', encoding='utf-8') as 파일:
         파일.write(내용)
-    print('파일 {} 생성'.format(파일명))
+    print('{} 파일 생성'.format(파일명))
     파일목록.append(파일명)
 
 print('압축 생성 ...', end=' ')
@@ -33,12 +33,12 @@ for 파일명 in 파일목록:
 wz.extractall()
 wz.close()
 
-# print('윈도우 zip 폴더')
-# with wZipFile('위인2.zip') as wz:
-#     for 파일명 in wz.namelist():
-#         print(파일명)
-#         info = wz.getinfo(파일명)
-#         print('{0}, 파일크기: {1}'.format(info.filename, info.file_size))
-#
-#     print('압축 해제')
-#     wz.extractall()
+print('윈도우 zip 폴더')
+with wZipFile('윈도우 Zip 폴더.zip') as wz:
+    for 파일명 in wz.namelist():
+        print(파일명)
+        info = wz.getinfo(파일명)
+        print('{0}, 파일크기: {1}'.format(info.filename, info.file_size))
+
+    print('압축 해제')
+    wz.extractall()
