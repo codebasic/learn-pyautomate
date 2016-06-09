@@ -1,12 +1,30 @@
+# coding: utf-8
 import pip
 import platform, sys, os, stat, zipfile
 import requests
 import time
 
 def setup_webdriver():
+    # selenium package 설치
     pip.main(['install', 'selenium'])
 
+    print('chromedriver 다운로드')
+    downloaded_file = download_chromedriver()
+    print(downloaded_file)
 
+    # 압축 해제
+    print('다운로드 받은 파일 압축 해제 ...')
+    driverzip = zipfile.ZipFile(downloaded_file)
+    driverzip.extractall()
+    driverfile = driverzip.namelist()[0]
+    driverzip.close()
+
+    # 실행권한 설정
+    st = os.stat(driverfile)
+    os.chmod(driverfile, st.st_mode | stat.S_IEXEC)
+    test_webdriver(driverfile)
+
+def download_chromedriver():
     driverfile_map = {'Windows': 'chromedriver_win32.zip',
         'Darwin': 'chromedriver_mac32.zip'}
     download_target = driverfile_map.get(platform.system(), None)
@@ -16,26 +34,12 @@ def setup_webdriver():
     chromedriver_url = 'http://chromedriver.storage.googleapis.com/2.22/'
     chromedriver_url = chromedriver_url + download_target
 
-    print('Downloading chromedriver ...')
-    http_download(chromedriver_url, download_target)
-
-    # 압축 해제
-    if os.path.exists(download_target):
-        print('Extracting downloaded driver file ...')
-        driverzip = zipfile.ZipFile(download_target)
-        driverzip.extractall()
-        driverfile = driverzip.namelist()[0]
-        driverzip.close()
-
-    # 실행권한 설정
-    st = os.stat(driverfile)
-    os.chmod(driverfile, st.st_mode | stat.S_IEXEC)
-    test_webdriver(driverfile)
+    driverfilepath = http_download(chromedriver_url, download_target)
+    return driverfilepath
 
 def test_webdriver(driverfile):
     from selenium import webdriver
-    print(driverfile)
-    chrome = webdriver.Chrome(driverfile)
+    chrome = webdriver.Chrome(os.path.join('.',driverfile))
     chrome.get('http://www.gogle.com')
     time.sleep(5)
     search_box = chrome.find_element_by_name('q')
@@ -49,12 +53,13 @@ def http_download(url, 파일경로):
     응답 = requests.get(url)
     if os.path.exists(파일경로):
         print('File already exists')
-        return
+        return 파일경로
 
-    파일 = open(파일경로, 'wb')
-    for 조각 in 응답.iter_content(100000):
-        파일.write(조각)
-    파일.close()
+    with open(파일경로, 'wb') as 파일:
+        for 조각 in 응답.iter_content(100000):
+            파일.write(조각)
+
+    return 파일경로
 
 if __name__ == '__main__':
     setup_webdriver()
