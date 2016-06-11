@@ -2,7 +2,7 @@ import sys
 from urllib.parse import urlparse, unquote, unquote_plus
 import requests
 
-def snapshot_webpage(url, filename=None, data=None):
+def snapshot_webpage(url, filename=None, mode='wb', data=None):
     res = http_download(url, data=data)
 
     # 파일명 설정
@@ -12,9 +12,13 @@ def snapshot_webpage(url, filename=None, data=None):
         filename = os.path.basename(path)
 
     # 파일로 저장
-    with open(filename, 'wb') as f:
-        for chunk in res.iter_content(100000):
-            f.write(chunk)
+    with open(filename, mode) as f:
+        if mode[-1] == 'b':
+            for chunk in res.iter_content(100000):
+                f.write(chunk)
+        else:
+            f.write(res.text)
+
     return filename
 
 def http_download(url, method='get', data=None):
