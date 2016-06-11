@@ -5,5 +5,6 @@ setup(name='webscrap',
     description='Webscrapping for humans',
     author='Lee Seongjoo',
     author_email='seongjoo@codeabasic.co',
+    package_dir={'webscrap': ''},
     packages=['webscrap']
     )
