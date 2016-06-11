@@ -3,14 +3,7 @@ from urllib.parse import urlparse, unquote, unquote_plus
 import requests
 
 def snapshot_webpage(url, filename=None, data=None):
-    try:
-        res = http_download(url, data=data)
-    except requests.ConnectionError as e:
-        sys.exit('HTTP이 통신에 문제가 있습니다: {0}'.format(e))
-    except requests.HTTPError as e:
-        sys.exit('응답 비정상: {0}'.format(e))
-    except:
-        raise
+    res = http_download(url, data=data)
 
     # 파일명 설정
     if filename is None:

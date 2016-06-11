@@ -1,3 +1,4 @@
+# coding: utf-8
 from . import io
 import pytest
 import requests
@@ -31,3 +32,9 @@ def test_snapshot_webpage():
     assert os.path.exists(filename)
     # cleanup
     os.unlink(filename)
+
+    with pytest.raises(requests.ConnectionError):
+        io.snapshot_webpage('http://no-such-domain.com', 'no.html')
+
+    with pytest.raises(requests.HTTPError):
+        io.http_download('http://google.com/nosuchpath')
