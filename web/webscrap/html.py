@@ -8,7 +8,12 @@ import importlib
 from . import io
 
 def get_soup(src, encoding='utf-8'):
-    # TODO: check if url or filepath
+    """Returns BeautifulSoup from URL or file
+
+    src: url or filepath
+    encoding: (default=utf-8)
+    """
+    # check if url or filepath
     scheme = urlparse(src).scheme
     if re.compile('(http|https)').match(scheme):
         res = io.http_download(src)
