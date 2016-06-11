@@ -16,3 +16,8 @@ def test_extract_table():
 
     table_frames = html.extract_tables(tables)
     assert table_frames[0].ix[0,0] == '1912년'
+
+def test_get_soup():
+    url = 'https://ko.wikipedia.org/wiki/%EC%95%A8%EB%9F%B0_%ED%8A%9C%EB%A7%81'
+    soup = html.get_soup(url)
+    assert soup.title.text == "앨런 튜링 - 위키백과, 우리 모두의 백과사전"
