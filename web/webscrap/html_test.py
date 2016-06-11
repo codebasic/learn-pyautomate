@@ -18,6 +18,15 @@ def test_extract_table():
     assert table_frames[0].ix[0,0] == '1912년'
 
 def test_get_soup():
+    # source is url
     url = 'https://ko.wikipedia.org/wiki/%EC%95%A8%EB%9F%B0_%ED%8A%9C%EB%A7%81'
     soup = html.get_soup(url)
+    assert soup.title.text == "앨런 튜링 - 위키백과, 우리 모두의 백과사전"
+
+    # source is file
+    filename = io.snapshot_webpage(url, 'turing_wiki.html')
+    soup = html.get_soup(filename)
+    # 파일 삭제
+    os.unlink(filename)
+
     assert soup.title.text == "앨런 튜링 - 위키백과, 우리 모두의 백과사전"
