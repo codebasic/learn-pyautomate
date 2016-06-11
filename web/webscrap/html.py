@@ -4,7 +4,6 @@ import re
 import pandas as pd
 from bs4 import BeautifulSoup
 import importlib
-
 from . import io
 
 def get_soup(src, encoding='utf-8'):
@@ -19,8 +18,9 @@ def get_soup(src, encoding='utf-8'):
         res = io.http_download(src)
         doc = res.text
     else:
-        doc = open(src, encoding='utf-8')
+        doc = open(src, encoding=encoding)
 
+    # select parser for BeautifulSoup
     parser = 'lxml' if importlib.find_loader('lxml') else 'html.parser'
     return BeautifulSoup(doc, parser)
 
