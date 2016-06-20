@@ -86,6 +86,9 @@ class EmailClient:
             self.select_folder()
         return result
 
+    def logout(self):
+        return self._imapclient.logout()
+
     def select_folder(self, folder='INBOX', readonly=True):
         return self._imapclient.select_folder(folder, readonly=readonly)
 
