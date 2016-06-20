@@ -1,6 +1,61 @@
-from imapclient import IMAPClient
+import os
+import configparser
 import email
 from email.header import decode_header
+import subprocess
+
+from imapclient import IMAPClient
+
+class EmailConfig:
+    def __init__(self, configpath, debug=False):
+        self.configpath = configpath
+        self.config = self._get_config()
+        self.debug=debug
+
+    def _get_config(self):
+        config = configparser.ConfigParser()
+        config.read(self.configpath)
+        return config
+
+    def get_access_token(self, section, refresh=False):
+        config = self.config
+        if refresh:
+            return self.refresh_access_token(section)
+        self.access_token = config[section]['access_token']
+        return self.access_token
+
+    def refresh_access_token(self, section):
+        config = self.config
+        self.user = config[section]['user']
+        client_id = config[section]['client_id']
+        client_secret = config[section]['client_secret']
+        refresh_token = config[section]['refresh_token']
+        # gmail oauth2.py is written for python 2
+        ps = subprocess.run([
+            os.path.join(os.path.dirname(__file__), './gmail/oauth2.py'),
+            '--user={}'.format(self.user),
+            '--client_id={}'.format(client_id),
+            '--client_secret={}'.format(client_secret),
+            '--refresh_token={}'.format(refresh_token)],
+            stdout=subprocess.PIPE)
+        access_token = ps.stdout.decode('utf-8').split('\n')[0].split(':')[1]
+        if self.debug:
+            print('접근 토큰: {}'.format(access_token))
+
+        # update config file
+        config[section]['access_token'] = access_token
+        self.update_config(verbose=self.debug)
+
+        self.access_token = access_token
+        return access_token
+
+    def update_config(self, verbose=False):
+        config = self.config
+        with open(self.configpath, 'w') as cf:
+            config.write(cf)
+        if verbose:
+            print('Config file {} updated.'.format(self.configpath))
+
 
 class EmailClient:
     def __init__(self,
@@ -10,11 +65,22 @@ class EmailClient:
         ssl=False,
         stream=False,
         ssl_context=None,
-        timeout=None):
-
+        timeout=None,
+        method=None,
+        debug=False):
+        self.debug = debug
         self._imapclient = IMAPClient(host, ssl=ssl)
+        if method:
+            if 'oauth2' in method:
+                oauth2_config = method['oauth2']
+                self.mailconfig = EmailConfig(oauth2_config['configfile'],
+                    debug=self.debug)
+                self.mailconfig.get_access_token('GMAIL', refresh=True)
+                login_result = self.oauth2_login(self.mailconfig.user,
+                    self.mailconfig.access_token)
+                print(login_result)
 
-    def oauth2_login(self, user, access_token):
+    def oauth2_login(self, user, access_token=None):
         result = self._imapclient.oauth2_login(user, access_token)
         if 'Success' in result[0].decode('utf-8'):
             self.select_folder()
