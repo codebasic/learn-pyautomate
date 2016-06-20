@@ -80,7 +80,7 @@ class EmailClient:
                     self.mailconfig.access_token)
                 print(login_result)
 
-    def oauth2_login(self, user, access_token=None):
+    def oauth2_login(self, user, access_token):
         result = self._imapclient.oauth2_login(user, access_token)
         if 'Success' in result[0].decode('utf-8'):
             self.select_folder()
