@@ -1,6 +1,7 @@
 import docx
 import pandas as pd
 from .excel import Excel
+import types
 
 def Word(filepath_or_buffer=None):
     """
@@ -11,7 +12,7 @@ def Word(filepath_or_buffer=None):
     docx.document.Document.extract_tables = extract_tables
     docx.document.Document.tables_to_excel = tables_to_excel
     docx.document.Document.add_tables_from_excel = add_tables_from_excel
-
+    
     return doc
 
 def extract_text(self):
