@@ -14,7 +14,7 @@ def extract_text(self):
     return '\n'.join([p.text for p in self.paragraphs])
 
 def extract_table(self):
-    table_frame_list = []
+    table_list = []
     for table in self.tables:
         table_data = []
         for row in table.rows:
@@ -28,7 +28,12 @@ def extract_table(self):
             #print()
             table_data.append(row_data)
 
-        table_frame = pd.DataFrame(table_data)
-        table_frame_list.append(table_frame)
+        try:
+            import pandas as pd
+            table_frame = pd.DataFrame(table_data)
+            table_list.append(table_frame)
+        except ImportError:
+            # TODO: pandas가 없는 경우 텍스트로 출력
+            pass
 
-    return table_frame_list if len(table_frame_list) > 1 else table_frame_list[0]
+    return table_list if len(table_list) > 1 else table_list[0]

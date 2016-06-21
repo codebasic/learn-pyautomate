@@ -6,7 +6,7 @@ setup(name='bigpy',
     author='Lee Seongjoo',
     author_email='seongjoo@codebasic.co',
     py_modules=['mail'],
-    packages=['webscrap'],
+    packages=['webscrap', 'office'],
     install_requires=[
         'imapclient',
         'python-docx'
