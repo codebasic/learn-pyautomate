@@ -7,12 +7,16 @@ def Word(filepath_or_buffer=None):
     """
     Extends docx.document.Document
     """
-    doc = docx.Document(filepath_or_buffer)
+    # patch class
     docx.document.Document.extract_text = extract_text
     docx.document.Document.extract_tables = extract_tables
     docx.document.Document.tables_to_excel = tables_to_excel
     docx.document.Document.add_tables_from_excel = add_tables_from_excel
-    
+    docx.document.Document.add_picture = add_picture
+
+    # make instance using patched class
+    doc = docx.Document(filepath_or_buffer)
+
     return doc
 
 def extract_text(self):
@@ -70,3 +74,10 @@ def add_tables_from_excel(self, excel_filepath, sheetname=None,
         for i, row in enumerate(table.rows):
             for j, cell in enumerate(row.cells):
                 cell.text = str(frame.iloc[i, j])
+
+def add_picture(self, image_path_or_stream, width=None, height=None):
+    if width: width = docx.shared.Inches(width)
+    if height: height = docx.shared.Inches(height)
+
+    run = self.add_paragraph().add_run()
+    return run.add_picture(image_path_or_stream, width, height)
