@@ -8,5 +8,6 @@ setup(name='bigpy',
     py_modules=['mail'],
     packages=['webscrap'],
     install_requires=[
-        'imapclient'
+        'imapclient',
+        'python-docx'
     ])
