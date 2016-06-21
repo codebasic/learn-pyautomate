@@ -7,13 +7,14 @@ def Word(filepath_or_buffer=None):
     """
     doc = docx.Document(filepath_or_buffer)
     docx.document.Document.extract_text = extract_text
-    docx.document.Document.extract_table = extract_table
+    docx.document.Document.extract_tables = extract_tables
+    docx.document.Document.tables_to_excel = tables_to_excel
     return doc
 
 def extract_text(self):
     return '\n'.join([p.text for p in self.paragraphs])
 
-def extract_table(self):
+def extract_tables(self):
     table_list = []
     for table in self.tables:
         table_data = []
@@ -23,9 +24,11 @@ def extract_table(self):
                 cell_text = ''
                 for p in cell.paragraphs:
                     cell_text += p.text
-                #print(cell_text, end=' ')
+                # if debug:
+                #     print(cell_text, end=' ')
                 row_data.append(cell_text)
-            #print()
+            # if debug:
+            #     print()
             table_data.append(row_data)
 
         try:
@@ -37,3 +40,13 @@ def extract_table(self):
             pass
 
     return table_list if len(table_list) > 1 else table_list[0]
+
+def tables_to_excel(self, filepath_or_buffer):
+    table_list = self.extract_tables()
+
+    excel_file = pd.ExcelWriter(filepath_or_buffer)
+    for i, table_frame in enumerate(table_list):
+        table_frame.to_excel(excel_file, 'Sheet{}'.format(i+1))
+    excel_file.save()
+
+    return filepath_or_buffer
