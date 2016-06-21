@@ -39,7 +39,7 @@ def extract_tables(self):
             # TODO: pandas가 없는 경우 텍스트로 출력
             pass
 
-    return table_list if len(table_list) > 1 else table_list[0]
+    return table_list[0] if len(table_list) == 1 else table_list
 
 def tables_to_excel(self, filepath_or_buffer):
     table_list = self.extract_tables()
