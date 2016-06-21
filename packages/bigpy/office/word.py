@@ -11,6 +11,7 @@ def Word(filepath_or_buffer=None):
     docx.document.Document.extract_tables = extract_tables
     docx.document.Document.tables_to_excel = tables_to_excel
     docx.document.Document.add_tables_from_excel = add_tables_from_excel
+
     return doc
 
 def extract_text(self):
@@ -53,15 +54,18 @@ def tables_to_excel(self, filepath_or_buffer):
 
     return filepath_or_buffer
 
-def add_tables_from_excel(self, excel_filepath, sheetname=None):
+def add_tables_from_excel(self, excel_filepath, sheetname=None,
+    table_style='TableGrid'):
     table_frames = Excel(excel_filepath, sheetname=sheetname)
 
     if not isinstance(table_frames, list):
         table_frames = [table_frames]
 
     for frame in table_frames:
+        frame = frame.fillna('')
         nrows, ncols = len(frame), len(frame.columns)
-        table = self.add_table(rows=nrows, cols=ncols)
+        table = self.add_table(rows=nrows, cols=ncols, style='TableGrid')
+        # table.style = 'LightShading-Accent1'
         for i, row in enumerate(table.rows):
             for j, cell in enumerate(row.cells):
                 cell.text = str(frame.iloc[i, j])
