@@ -1,5 +1,6 @@
 # coding: utf-8
 from . import io, html
+from .search import search
 
 import pip
 import platform, sys, os, stat, zipfile
